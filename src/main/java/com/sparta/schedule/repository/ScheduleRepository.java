@@ -162,15 +162,15 @@ public class ScheduleRepository {
         }, id);
     }
 
-    public boolean pwCheck(long id, String password){
+    public boolean pwCheck(long id, String password) {
         //id에 해당하는 비번 값 찾음
         String sql = "SELECT password FROM schedule WHERE id = ?";
         //database에 있는 pw값 가지고오기
-        String pw = jdbcTemplate.queryForObject(sql,String.class, id);
+        String pw = jdbcTemplate.queryForObject(sql, String.class, id);
         //맞는지 체크!
-        if(pw.equals(password)){
+        if (pw.equals(password)) {
             return true;
-        }else{
+        } else {
             throw new IllegalArgumentException("비번 틀림.");
         }
 

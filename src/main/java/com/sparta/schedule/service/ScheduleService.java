@@ -12,8 +12,6 @@ import com.sparta.schedule.entity.Schedule;
 import com.sparta.schedule.repository.ScheduleRepository;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class ScheduleService {
@@ -46,13 +44,11 @@ public class ScheduleService {
         } else {
             throw new IllegalArgumentException("선택한 메모는 존재하지 않습니다.");
         }
-
     }
 
     public List<GetResponseDto> getSchedules(String date2, String name) {
         ScheduleRepository scheduleRepository = new ScheduleRepository(jdbcTemplate);
-        List<GetResponseDto> getResponseDtos = scheduleRepository.find(date2,name);
-
+        List<GetResponseDto> getResponseDtos = scheduleRepository.find(date2, name);
         return getResponseDtos;
     }
 
@@ -60,7 +56,6 @@ public class ScheduleService {
         ScheduleRepository scheduleRepository = new ScheduleRepository(jdbcTemplate);
         scheduleRepository.fix(requestDto);
         Schedule schedule = scheduleRepository.findById(requestDto.getId());
-
         return new FixResponseDto(schedule);
     }
 

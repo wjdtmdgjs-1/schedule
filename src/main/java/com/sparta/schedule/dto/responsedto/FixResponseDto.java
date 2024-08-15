@@ -3,8 +3,6 @@ package com.sparta.schedule.dto.responsedto;
 import com.sparta.schedule.entity.Schedule;
 import lombok.Getter;
 
-import java.util.Date;
-
 @Getter
 public class FixResponseDto {
     private Long id;
@@ -13,7 +11,7 @@ public class FixResponseDto {
     private String password;
     private String date2;
 
-    public FixResponseDto(Schedule schedule){
+    public FixResponseDto(Schedule schedule) {
         this.id = schedule.getId();
         this.work = schedule.getWork();
         this.name = schedule.getName();

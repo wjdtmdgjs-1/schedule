@@ -2,8 +2,6 @@ package com.sparta.schedule.dto.requestdto;
 
 import lombok.Getter;
 
-import java.util.Date;
-
 @Getter
 public class FixRequestDto {
     private Long id;

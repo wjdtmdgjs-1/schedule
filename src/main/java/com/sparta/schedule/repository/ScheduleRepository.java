@@ -2,16 +2,17 @@ package com.sparta.schedule.repository;
 
 import com.sparta.schedule.dto.requestdto.DeleteRequestDto;
 import com.sparta.schedule.dto.requestdto.FixRequestDto;
-import com.sparta.schedule.dto.requestdto.ScheduleRequestDto;
 import com.sparta.schedule.dto.responsedto.GetResponseDto;
-import com.sparta.schedule.dto.responsedto.ScheduleResponseDto;
 import com.sparta.schedule.entity.Schedule;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -50,15 +51,16 @@ public class ScheduleRepository {
         return schedule;
     }
 
-       public void fix(FixRequestDto requestDto) {
+    public void fix(FixRequestDto requestDto) {
 
+        //수정하는 순간의 시간을 받아 형식에 맞게 format
         java.util.Date nowDate = new Date();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String date3 = simpleDateFormat.format(nowDate);
 
         String sql = "UPDATE schedule SET work = ?, name = ?, date2 = ?  WHERE id = ? AND password =?";
         jdbcTemplate.update(sql, requestDto.getWork(), requestDto.getName(), date3,
-                requestDto.getId(),requestDto.getPassword());
+                requestDto.getId(), requestDto.getPassword());
 
     }
 
@@ -67,28 +69,9 @@ public class ScheduleRepository {
         jdbcTemplate.update(sql, requestDto.getId(), requestDto.getPassword());
     }
 
-
-     /*public List<ScheduleResponseDto> findAll() {
-        // DB 조회
-        String sql = "SELECT * FROM schedule";
-
-        return jdbcTemplate.query(sql, new RowMapper<ScheduleResponseDto>() {
-            @Override
-            public ScheduleResponseDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-                // SQL 의 결과로 받아온 Memo 데이터들을 MemoResponseDto 타입으로 변환해줄 메서드
-                Long id = rs.getLong("id");
-                String work = rs.getString("work");
-                String name = rs.getString("name");
-                String password = rs.getString("password");
-                java.util.Date date1 = rs.getDate("date1");
-                java.util.Date date2 = rs.getDate("date2");
-                return new ScheduleResponseDto(id, work, name, password, date1, date2);
-            }
-        });
-    }*/
-
-    public List<GetResponseDto> find(String date2, String name){
-        if((date2!=null)&&(name!=null)) {
+    public List<GetResponseDto> find(String date2, String name) {
+        //nullExeption을 피하기위해 equals.() 대신 != 로 처리
+        if ((date2 != null) && (name != null)) {
             String sql = "SELECT * FROM schedule WHERE DATE_FORMAT(date2, '%Y-%m-%d')= ? AND name = ? ORDER BY date2 DESC";
 
             return jdbcTemplate.query(sql, new RowMapper<GetResponseDto>() {
@@ -102,9 +85,9 @@ public class ScheduleRepository {
                     String date2 = rs.getString("date2");
                     return new GetResponseDto(id, work, name, date1, date2);
                 }
-            },date2,name);
+            }, date2, name);
 
-        }else if((date2==null)&&(name!=null)){
+        } else if ((date2 == null) && (name != null)) {
             String sql = "SELECT * FROM schedule WHERE name = ? ORDER BY date2 DESC";
 
             return jdbcTemplate.query(sql, new RowMapper<GetResponseDto>() {
@@ -118,8 +101,8 @@ public class ScheduleRepository {
                     String date2 = rs.getString("date2");
                     return new GetResponseDto(id, work, name, date1, date2);
                 }
-            },name);
-        } else if ((date2!=null)&&(name==null)) {
+            }, name);
+        } else if ((date2 != null) && (name == null)) {
             String sql = "SELECT * FROM schedule WHERE DATE_FORMAT(date2, '%Y-%m-%d')= ? ORDER BY date2 DESC";
 
             return jdbcTemplate.query(sql, new RowMapper<GetResponseDto>() {
@@ -133,8 +116,8 @@ public class ScheduleRepository {
                     String date2 = rs.getString("date2");
                     return new GetResponseDto(id, work, name, date1, date2);
                 }
-            },date2);
-        } else{
+            }, date2);
+        } else {
             String sql = "SELECT * FROM schedule ORDER BY date2 DESC";
 
             return jdbcTemplate.query(sql, new RowMapper<GetResponseDto>() {
@@ -152,13 +135,6 @@ public class ScheduleRepository {
         }
 
     }
-
-
-
-    /*public void delete(Long id) {
-        String sql = "DELETE FROM schedule WHERE id = ?";
-        jdbcTemplate.update(sql, id);
-    }*/
 
     public Schedule findById(Long id) {
         // DB 조회

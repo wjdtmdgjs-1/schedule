@@ -32,9 +32,9 @@ public class ScheduleController {
 
     //선택한 일정 조회
     @GetMapping("/schedule/{id}")
-    public GetResponseDto getOneSchedule(@PathVariable Long id, @RequestBody GetRequestDto requestDto) {
+    public GetResponseDto getOneSchedule(@PathVariable Long id) {
         ScheduleService scheduleService = new ScheduleService(jdbcTemplate);
-        return scheduleService.getOneSchedule(id, requestDto);
+        return scheduleService.getOneSchedule(id);
     }
 
     //일정 목록 조회

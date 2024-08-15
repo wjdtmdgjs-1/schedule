@@ -36,7 +36,7 @@ public class ScheduleService {
         return scheduleResponseDto;
     }
 
-    public GetResponseDto getOneSchedule(Long id, GetRequestDto requestDto) {
+    public GetResponseDto getOneSchedule(Long id) {
         ScheduleRepository scheduleRepository = new ScheduleRepository(jdbcTemplate);
         Schedule schedule = scheduleRepository.findById(id);
         if (schedule != null) {

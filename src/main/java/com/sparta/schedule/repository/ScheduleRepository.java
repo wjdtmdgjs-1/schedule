@@ -52,6 +52,8 @@ public class ScheduleRepository {
     }
 
     public void fix(FixRequestDto requestDto) {
+        //비번맞는지 체크!
+        pwCheck(requestDto.getId(), requestDto.getPassword());
 
         //수정하는 순간의 시간을 받아 형식에 맞게 format
         java.util.Date nowDate = new Date();
@@ -59,17 +61,21 @@ public class ScheduleRepository {
         String date3 = simpleDateFormat.format(nowDate);
 
         String sql = "UPDATE schedule SET work = ?, name = ?, date2 = ?  WHERE id = ? AND password =?";
+
         jdbcTemplate.update(sql, requestDto.getWork(), requestDto.getName(), date3,
                 requestDto.getId(), requestDto.getPassword());
 
     }
 
     public void delete(DeleteRequestDto requestDto) {
+        //비번 맞는지 체크하기!
+        pwCheck(requestDto.getId(), requestDto.getPassword());
         String sql = "DELETE FROM schedule WHERE id = ? AND password = ?";
         jdbcTemplate.update(sql, requestDto.getId(), requestDto.getPassword());
     }
 
     public List<GetResponseDto> find(String date2, String name) {
+
         //nullExeption을 피하기위해 equals.() 대신 != 로 처리
         if ((date2 != null) && (name != null)) {
             String sql = "SELECT * FROM schedule WHERE DATE_FORMAT(date2, '%Y-%m-%d')= ? AND name = ? ORDER BY date2 DESC";
@@ -154,6 +160,20 @@ public class ScheduleRepository {
                 return null;
             }
         }, id);
+    }
+
+    public boolean pwCheck(long id, String password){
+        //id에 해당하는 비번 값 찾음
+        String sql = "SELECT password FROM schedule WHERE id = ?";
+        //database에 있는 pw값 가지고오기
+        String pw = jdbcTemplate.queryForObject(sql,String.class, id);
+        //맞는지 체크!
+        if(pw.equals(password)){
+            return true;
+        }else{
+            throw new IllegalArgumentException("비번 틀림.");
+        }
+
     }
 }
 
